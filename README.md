@@ -1,6 +1,9 @@
+# Nmap2CSV
 ![nmap-parser-logo](https://img.shields.io/badge/nmap-parser-blue?style=flat-square&logo=ruby&logoColor=white)
 
-This CLI tool parses **Nmap XML files** to extract host and service information, and generates detailed CSV reports. It supports parsing both single XML files and directories containing multiple XML files.
+This CLI tool is yet another **Nmap XML file(s)** parser to extract host and service information and generates detailed CSV reports. It supports both individual XML files and directories containing multiple Nmap reports.
+
+This tool is intended to parse large-scale Nmap scans and make the extracted host and service data more digestible and actionable—especially when dealing with numerous targets or comprehensive scans.
 
 ---
 
@@ -22,15 +25,15 @@ This CLI tool parses **Nmap XML files** to extract host and service information,
 
 #### **Services CSV**
 ```csv
-"IP-address";"Hostname";"mac";"mac-vendor";"os_name";"port";"tcp/udp";"protocol";"state";"tunnel";"http-title";"Info"
-"192.168.1.1";"example.local";"00:11:22:33:44:55";"Vendor Name";"Linux";"443";"tcp";"http";"open";"ssl";"Example Title";"Apache 2.4.18"
-"192.168.1.1";"example.local";"00:11:22:33:44:55";"Vendor Name";"Linux";"22";"tcp";"ssh";"open";;"OpenSSH 7.4p1 protocol 2.0"
+"IP-Address";"Hostname";"Mac";"Mac-Vendor";"OS name";"Port";"Protocol";"Service";"State";"Tunnel";"HTTP-Title";"Info";"CPE";"Vulners"
+"45.33.32.156";"scanme.nmap.org";"";"";"Actiontec MI424WR-GEN3I WAP";"22";"tcp";"ssh";"open";"";"";"OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 Ubuntu Linux; protocol 2.0";"cpe:/a:openbsd:openssh:6.6.1p1";"https://vulners.com/cve/CVE-2023-38408"
+"45.33.32.156";"scanme.nmap.org";"";"";"Actiontec MI424WR-GEN3I WAP";"80";"tcp";"http";"open";"";"Go ahead and ScanMe!";"Apache httpd 2.4.7 (Ubuntu)";"cpe:/a:apache:http_server:2.4.7";"https://vulners.com/githubexploit/C94CBDE1-4CC5-5C06-9D18-23CAB216705E"
 ```
 
 #### **Hosts CSV**
 ```csv
-"address";"mac";"name";"os_name";"os_flavor";"os_sp"
-"192.168.1.1";"00:11:22:33:44:55";"example.local";"Linux";"Debian";"10"
+"IP-Address";"Hostname";"Mac";"Mac-Vendor";"OS"
+"45.33.32.156";"scanme.nmap.org";"";"";"Actiontec MI424WR-GEN3I WAP"
 ```
 ---
 
@@ -50,6 +53,7 @@ This CLI tool parses **Nmap XML files** to extract host and service information,
     - `tunnel` attribute (e.g., SSL).
     - Script ID `http-title` output (e.g., HTTP content title for that port/service).
     - Product, version, and extra information.
+    - `CPE` if present and vulns
 
 - Supports:
   - Single XML file parsing.
@@ -60,39 +64,15 @@ This CLI tool parses **Nmap XML files** to extract host and service information,
 
 ---
 
-## CSV Outputs
+## Nmap Settings
 
-### `services.csv`
+Nmap parameters I tend to reuse...
+```bash
+nmap -sV --script='default or vulners or http-headers or http-server-header or https-redirect or banner or smb-* or *-version' \
+  -oX discovery scanme.nmap.org
+```
 
-This file contains information about services detected by Nmap from the parsed files. Below are the columns in the file:
-
-| Column       | Description                                                                 |
-|--------------|-----------------------------------------------------------------------------|
-| `IP-address` | The IP address of the host.                                                |
-| `Hostname`   | The hostname(s) of the host, comma-separated if multiple exist.            |
-| `mac`        | The MAC address of the host (if available).                                |
-| `mac-vendor` | The vendor of the MAC address (if available).                              |
-| `os_name`    | Operating system name (if detected).                                       |
-| `port`       | The port for the given service.                                            |
-| `tcp/udp`    | Whether the service is run over TCP or UDP.                                |
-| `protocol`   | The service name (e.g., `http`, `ssh`) if identified.                     |
-| `state`      | The status of the port (`open`, `closed`, or `filtered`).                  |
-| `tunnel`     | The type of tunnel associated with the service (`ssl`, or `null` if none). |
-| `http-title` | The output of `<script id="http-title">` if detected.                      |
-| `Info`       | Combination of the service's product, version, and additional information. |
-
-### `hosts.csv`
-
-This file contains information about the hosts detected by Nmap from the parsed files. Below are the columns in the file:
-
-| Column     | Description                                                             |
-|------------|-------------------------------------------------------------------------|
-| `address`  | The IP address of the host.                                             |
-| `mac`      | The MAC address of the host (if available).                             |
-| `name`     | The hostname(s) of the host, comma-separated if multiple exist.         |
-| `os_name`  | The name of the detected operating system.                              |
-| `os_flavor`| The flavor of the operating system (e.g., `Debian`, `Windows`).         |
-| `os_sp`    | The service pack or generation information of the operating system.     |
+[Checkout my Nmap runner script!](https://gist.github.com/dreizehnutters/c235ffeb2b4b8e915908e335738381de)
 
 ---
 
