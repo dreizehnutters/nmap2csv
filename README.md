@@ -3,7 +3,7 @@
 
 This CLI tool is yet another **Nmap XML file(s)** parser to extract host and service information and generates detailed CSV reports. It supports both individual XML files and directories containing multiple Nmap reports.
 
-This tool is intended to parse large-scale Nmap scans and make the extracted host and service data more digestible and actionable—especially when dealing with numerous targets or comprehensive scans.
+This tool is intended to parse large-scale Nmap scans and make the extracted host and service data more digestible and actionable-especially when dealing with numerous targets or comprehensive scans.
 
 ---
 
