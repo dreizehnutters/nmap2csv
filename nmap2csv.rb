@@ -38,6 +38,27 @@ class NmapXMLParser
         service_node = port_node.at_xpath('service')
         next unless service_node
 
+        cpe = service_node.at_xpath('cpe')&.text
+
+        # Grab Vulners script node
+        vulners_script = port_node.at_xpath('script[@id="vulners"]')
+        vulners_links = ''
+
+        if vulners_script && cpe
+          # Look for tables with matching CPE key
+          cpe_table = vulners_script.xpath("table[@key='#{cpe}']")
+          vuln_tables = cpe_table.xpath('table')
+
+          links = vuln_tables.first(3).map do |vuln|
+            type = vuln.at_xpath("elem[@key='type']")&.text
+            id   = vuln.at_xpath("elem[@key='id']")&.text
+            next unless type && id
+            "https://vulners.com/#{type}/#{id}"
+          end.compact
+
+          vulners_links = links.join('\n')
+        end
+
         @service_results << {
           'IP-Address' => ip,
           'Hostname' => hostnames,
@@ -54,7 +75,9 @@ class NmapXMLParser
             service_node['product'],
             service_node['version'],
             service_node['extrainfo']
-          ].compact.reject(&:empty?).join(' ').strip()
+          ].compact.reject(&:empty?).join(' ').strip(),
+          'CPE' => cpe,
+          'Vulners' => vulners_links
         }
       end
     end
