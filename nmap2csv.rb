@@ -86,8 +86,9 @@ end
 
 
 class NmapCLI
-  SERVICES_CSV_FILENAME = 'services.csv'
-  HOSTS_CSV_FILENAME = 'hosts.csv'
+  PREFIX = (0...4).map { [('a'..'f'),(0..9)].map(&:to_a).flatten[rand(6+10)] }.join
+  SERVICES_CSV_FILENAME = PREFIX+'_services.csv'
+  HOSTS_CSV_FILENAME = PREFIX+'_hosts.csv'
 
   def self.run
     options = {}
