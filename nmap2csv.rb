@@ -154,14 +154,17 @@ class NmapCLI
     return if results.empty?
     headers = results.first.keys
     CSV.open(output_file,
-            'w',
-            col_sep: ';',
-            quote_char: '"',
-            force_quotes: true,
-            write_headers: true,
-            headers: headers) do |csv|
+             'w',
+             col_sep: ';',
+             quote_char: '"',
+             force_quotes: true,
+             write_headers: true,
+             headers: headers) do |csv|
       results.each do |row|
-        csv << headers.map { |h| row[h] }
+        row_with_breaks = row.transform_values do |value|
+          value.is_a?(String) ? value.gsub('\\n', "\n") : value
+        end
+        csv << headers.map { |h| row_with_breaks[h] }
       end
     end
   end
