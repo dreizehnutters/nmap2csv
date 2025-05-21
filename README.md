@@ -11,17 +11,11 @@ This tool is intended to parse large-scale Nmap scans and make the extracted hos
 ## Usage
 
 ```bash
-./nmap2csv.rb --file <file_or_directory> [--output <output_directory>]
+./nmap2csv.rb -f <file_or_directory> [--output <output_directory>]
 ```
 
-### Examples
 
-#### Parsing a Single XML File
-```bash
-./nmap2csv.rb --file /path/to/nmap_scan.xml
-```
-
-### CSV Outputs
+#### CSV Outputs
 
 #### **Services CSV**
 ```csv
@@ -29,6 +23,8 @@ This tool is intended to parse large-scale Nmap scans and make the extracted hos
 "45.33.32.156";"scanme.nmap.org";"";"";"Actiontec MI424WR-GEN3I WAP";"22";"tcp";"ssh";"open";"";"";"OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 Ubuntu Linux; protocol 2.0";"cpe:/a:openbsd:openssh:6.6.1p1";"https://vulners.com/cve/CVE-2023-38408"
 "45.33.32.156";"scanme.nmap.org";"";"";"Actiontec MI424WR-GEN3I WAP";"80";"tcp";"http";"open";"";"Go ahead and ScanMe!";"Apache httpd 2.4.7 (Ubuntu)";"cpe:/a:apache:http_server:2.4.7";"https://vulners.com/githubexploit/C94CBDE1-4CC5-5C06-9D18-23CAB216705E"
 ```
+
+![example output](.img/image.png)
 
 #### **Hosts CSV**
 ```csv
@@ -91,6 +87,7 @@ Clone the repository to your local machine:
 ```bash
 git clone https://github.com/dreizehnutters/nmap2csv.git
 cd nmap2csv
+chmod +x nmap2csv.rb
 ```
 
 ---
